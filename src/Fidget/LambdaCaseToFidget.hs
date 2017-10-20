@@ -52,8 +52,8 @@ transLCtoFidget main initialize (Program decls topDecls) = liftBase $ do
   let readEnv = [(8, read8), (16, read16), (32, read32)]
   let writeEnv = [(8, write8), (16, write16), (32, write32)]
   bindings <-
-    runReaderT (withVarBinds [(x, VarBind (F.Aconst (F.Oarea x a)) Nothing)
-                                | (x, a, _, _) <- areas']
+    runReaderT (withVarBinds [ (x, VarBind (F.Aconst (F.Oarea x a)) Nothing)
+                             | (x, a, _, _) <- areas']
                 (trans_prog_decls senv cenv readEnv writeEnv decls))
                empty_env
   return $ F.Program
@@ -590,7 +590,7 @@ prim_table senv cenv readEnv writeEnv = table where
     ("@", \[TyLit n,area, _, _] [a1,a2] k ->
       -- Extra type arguments are due to type synonyms
       (k . F.Satom) $ F.Aat a1 a2 (trans_type_area area)),
-  
+
     -- bitdata
     ("constructBitdata", \[r] as k ->
       let (args,TyApp _ (TyLabel dc)) = LCT.uncurry_type r
@@ -655,13 +655,13 @@ prim_table senv cenv readEnv writeEnv = table where
             find ((field,width,offset):fields) | (field == id) = (width,offset)
             find (_:fields) = find fields
   lookup_bitdata_field _ _ = error "lookup_bitdata_field impossible"
-  
+
   bit_field :: F.Atom -> Int -> Int -> F.Atom
   bit_field v width offset = F.Abinop F.Oshl (F.Abinop F.Oand v (int_const (2^width - 1))) (ix_const offset)
-  
+
   bit_mask_out :: Int -> Int -> F.Atom
   bit_mask_out width offset = int_const (complement (((2^width - 1)::Int) `shift` offset))
-  
+
   lookup_struct_field :: Type -> Type -> Int
   lookup_struct_field (TyCon(Kinded sid KArea)) (TyLabel id) | StructBind sfields <- lookup_env senv sid =
     find sfields

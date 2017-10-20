@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts, FlexibleInstances, TypeSynonymInstances, OverloadedStrings #-}
+{-# LANGUAGE FlexibleContexts, FlexibleInstances, TypeSynonymInstances #-}
 module Solver.PP where
 
 import Data.Char
@@ -51,7 +51,7 @@ instance {-# OVERLAPPING #-} PP t => PP [t]
 instance {-# OVERLAPPING #-} (PP a, PP b) => PP (a,b)
     where pp _ (a,b) = '(' : pp 0 a ++ ", " ++ pp 0 b ++ ")"
 
-instance (PP a, PP b, PP c) => PP (a, b, c)
+instance  {-# OVERLAPPING #-}  (PP a, PP b, PP c) => PP (a, b, c)
     where pp _ (a, b, c) = '(' : pp 0 a ++ ", " ++ pp 0 b ++ ", " ++ pp 0 c ++ ")"
 
 --------------------------------------------------------------------------------
@@ -127,7 +127,8 @@ instance {-# OVERLAPPING #-} PP (Id, [FunDep])
                     highIdx = maximum (concatMap (\(ts :~> us) -> ts ++ us) fds)
                     vars = take (highIdx + 1) names
 
-instance {-# OVERLAPPING #-} PP FunDeps
+
+instance  {-# OVERLAPPING #-}  PP FunDeps
     where pp _ fds = intercalate "\n" (map ((++ ".") . ppx) fds)
 
 instance PP Requirement
@@ -136,7 +137,7 @@ instance PP Requirement
 instance PP Requirements
     where pp _ rqs = intercalate "\n" (map ((++ ".") . ppx) rqs)
 
-instance {-# OVERLAPPING #-} PP (Id, [Int])
+instance  {-# OVERLAPPING #-} PP (Id, [Int])
     where pp _ (clName, ops) = intercalate " " (ppx clName : vars)  ++ " | " ++ intercalate ", " (map ppOp ops)
               where ppOp n = "opaque " ++ (vars !! n)
                     highIdx = maximum ops

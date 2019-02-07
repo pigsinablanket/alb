@@ -11,7 +11,7 @@ testFile f = do
   hFlush stdout
   code <- rawSystem f []
   x <- return $ case code of
-                  ExitSuccess	-> []
+                  ExitSuccess   -> []
                   ExitFailure x -> [(f, x)]
   putStr "\n"
   return x

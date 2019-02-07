@@ -12,20 +12,20 @@ TESTS=./example-test.out ./three.out ./Lambda.out  ./State.out ./listdriver.out 
 BROKEN_TESTS=./largeword-driver.out
 
 
-ALB_DIR=$(HOME)/workspace/alb
+ALB_DIR=$(HOME)/workspace/habit-lang/alb
 
 # MIL locations
-MIL_DIR=$(HOME)/workspace/mil-tools/
+MIL_DIR=$(HOME)/workspace/habit-lang/mil-tools
 MIL_JAR=mil-tools
 
 CLANG_EXE=/usr/bin/clang
-ALB_EXE=$(HOME)/.cabal/bin/alb
+ALB_EXE=$(HOME)/.local/bin/alb
 
-MIL_OPTS= --mil-jar=$(MIL_DIR)/$(MIL_JAR).jar --include-mil $(MIL_DIR)/lib/basic.mil --llvm-main main --mil-opt "--64"
+MIL_OPTS=--mil-jar=$(MIL_DIR)/$(MIL_JAR).jar --include-mil $(MIL_DIR)/lib/basic.mil --llvm-main main --mil-opt "--64"
 
-CLANG_OPTS= --clang=$(CLANG)
+CLANG_OPTS=--clang=$(CLANG_EXE)
 
-ALB_OPTS= --verbose --path=$(ALB_DIR)/lib  -i $(ALB_DIR)/lib:./ $(MIL_OPTS) $(CLANG_OPTS) $(MIL_OPTS)
+ALB_OPTS=--verbose $(MIL_OPTS) $(CLANG_OPTS)
 
 
 .PHONEY: all tests
